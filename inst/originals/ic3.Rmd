@@ -1,0 +1,57 @@
+---
+title: "In-class 3: R-squared"
+author: "[Your names here]"
+date: "30 January 2020"
+output: 
+  html_document:
+    highlight: tango
+---
+
+## Instructions
+
+In HW1 you wrote the following function to generate data from a linear model (see my solutions):
+
+```{r functions, echo=TRUE}
+generate.data <- function(n, p, sig.epsilon=1){
+  ## This function takes 3 inputs (2 mandatory, 1 optional)
+  ## n - the number of observations
+  ## p - the number of predictors
+  ## sig.epsilon - (optional) the sd of the normal noise (default=1 if omitted)
+  X = matrix(rnorm(p*n), ncol=p) ## a matrix of standard normal RVs (n x p)
+  epsilon = rnorm(n, sd = sig.epsilon) ## noise ~ N(0, sig.epsilon)
+  beta = p:1 # p beta coefficients
+  beta.0 = 3 # an intercept
+  y = beta.0 + X %*% beta + epsilon # the linear model
+  df = data.frame(y, X) # put it all in a data frame
+  return(df) # output
+}
+```
+
+You should complete the code below to see what happens to $R^2$ as you add additional _irrelevant_ predictors. Note that some lines have comments requiring you to add code. Others ask you questions which you should answer in the comments.
+
+## Complete the following
+
+```{r adding-vars, echo=TRUE, fig.width=4, fig.height=4}
+library(tidyverse)
+p = 3 # the number of true predictors
+n = 100 # the total number of observations
+pmax = 10 # the maximum number of predictors to examine, feel free to change this
+stopifnot(pmax<n, pmax>p) # what does this do?
+true.model = # add code here
+extra.predictors = data.frame(matrix(rnorm(n*(pmax-p)), nrow=n)) 
+names(extra.predictors) = paste0('X',(p+1):pmax) # why am I naming the extra predictors? What were their names before
+full.data = bind_cols(true.model,extra.predictors)
+rsq = double(pmax) # What do we call this step? We discussed this last week.
+for(iter in 1:pmax){
+  form = formula(paste('y ~ ', paste(names(full.data)[2:(iter+1)], collapse=' + '))) # annoying
+  fit.mdl = lm(form, data=full.data)
+  rsq[iter] = summary(fit.mdl)$r.sq # note how easy it is to get this
+}
+ggplot(data.frame(nvars=1:pmax, rsq),aes(x=nvars,y=rsq)) + 
+  geom_path() + geom_point(color='red') + theme_minimal(base_family = 'serif')
+```
+
+## Questions to answer:
+
+1. Does $R^2$ decrease? 
+2. Why or why not?
