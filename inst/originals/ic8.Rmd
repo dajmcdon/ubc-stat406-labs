@@ -1,0 +1,75 @@
+---
+title: 'In-class 8: Weighted least squares'
+author: '[Your name here]'
+date: '12 March 2020'
+output: 
+  html_document:
+    highlight: tango
+---
+
+## Instructions
+
+1. Rename this document with your student ID (not the 10-digit number, your IU username, e.g. `dajmcdon`). Include your buddy in the author field if you are working together.
+1. I have given you code to generate data and fit a linear model.
+1. Follow the instructions to replicate the bootstrap from the text/lecture on this new data.
+1. Answer the question at the end.
+
+## Weighted least squares, fake data
+
+1. Generate 250 observations from a linear model as follows: $x_i$ should uniform between -2 and 2, the $\epsilon_i$ should be normally distributed with mean zero and variance $x_i^2$, $y_i=3 + 2x_i + \epsilon_i$.
+
+2. Plot $y$ against $x$.
+
+```{r generate-data, message=FALSE}
+library(tidyverse)
+library(cowplot)
+set.seed(12032020)
+
+```
+
+3. Estimate the model using OLS and WLS (with appropriate weights). This is easy to do. Try `?lm` if you're lost.
+
+4. Produce a plot that shows the original data and both estimated regression lines. 
+
+5. Produce confidence intervals for both methods. What do you notice?
+
+```{r least-squares}
+
+
+```
+
+## Weighted least squares, real data
+
+1. Load the `301gradedist` data set. This was downloaded from [IU's grade distribution database](http://gradedistribution.registrar.indiana.edu).
+
+2. Regress `avg_grade` on `instructor` and `avg_student_gpa` using OLS __without intercept__. Perform the same regression using `n_student` as the weights. Why is this an appropriate weighting? Again, I suggest you consult the documentation `?lm`. 
+
+```{r s301-models, message=FALSE}
+s301 = read_csv("301gradedist.csv") %>% mutate(instructor = as.factor(instructor))
+
+```
+
+3. How do you interpret the coefficients on the instructor? Which instructor seems to be the best (in the sense of their students getting the highest grades)?
+
+4. Make one plot that shows all the data and the regression line (from WLS) for each instructor.
+
+```{r s301-preds}
+
+
+```
+
+
+5. Produce confidence intervals for the weighted least squares version. What have you learned? Are there other variables you would want to include? Why did I have you do this without intercept?
+
+```{r s301-intervals}
+
+
+```
+
+6. This many confidence intervals are best displayed in a graphic. Produce such a graphic for the different instructors.
+
+```{r s301-confint-plot}
+
+
+```
+

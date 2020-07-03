@@ -1,0 +1,38 @@
+---
+title: "IC12: Trees and leaves"
+author: "Team name here"
+date: "21 April 2020"
+output: html_document
+---
+
+## Instructions
+
+1. Rename this document with your student ID (not the 10-digit number, your IU username, e.g. `dajmcdon`). Include your buddy in the author field if you are working together.
+2. Follow the instructions in each section.
+
+## Trees and leaves
+
+The `leaf` dataset contains data derived from images of 40 different species of leaves. Examine the file `LeafDescription.pdf` to see some example images and detailed descriptions of the different covariates. Use this description and the data to perform the analysis.
+
+## Analysis
+
+1. Load the data. Note: only the "simple" leaves are included. You may need to rename the columns with: 
+```
+names(leaf) = c('Species','Specimen_Number','Eccentricity','Aspect_Ratio',
+                'Elongation','Solidity','Stochastic_Convexity','Isoperimetric_Factor',
+                'Maximal_Indent_Depth','Lobedness','Average_Intensity',
+                'Average_Contrast','Smoothness','Third_moment','Uniformity','Entropy')
+```
+2. Create a new factor called `lobes` which collapses the different leaf species into two groups: those in Species 5-7, 11, 15, 23, and 30 (many), versus the rest (one). 
+3. Produce a pairs plot of all continuous predictors. Color the points by `lobes`.
+
+
+4. Train a tree classifier based on this data for predicting complexity. Use all predictors (not `Species` or `Specimen_number` obvs). Prune your tree using cross validation to choose the depth and plot the tree (see Slide 13 from this week). Produce a confusion matrix and find the tree's in-sample error rate.
+5. Train a random forest using 400 trees. Produce a variable importance plot, a confusion matrix, and find the in-sample error rate.
+
+## Load data and pairs plot
+
+
+## The tree
+
+## The forest

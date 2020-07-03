@@ -1,0 +1,114 @@
+---
+title: "In-class 10: Specification testing"
+author: "[Your name here]"
+date: "7 April 2020"
+output: html_document
+---
+
+## Instructions
+
+1. Rename this document with your student ID (not the 10-digit number, your IU username, e.g. `dajmcdon`). Include your buddy in the author field if you are working together.
+2. Follow the instructions in each section.
+
+
+```{r functions, echo=TRUE}
+set.seed(000012345)
+n = 100
+p = 3
+X = matrix(rnorm(n*(p+1)),nrow=n)
+generate.data <- function(X, sig.epsilon=1){
+  ## This function takes 2 inputs (1 mandatory, 1 optional)
+  ## X - the design matrix
+  ## sig.epsilon - (optional) the sd of the normal noise (default=1 if omitted)
+  n = nrow(X)
+  p = ncol(X)
+  epsilon = rnorm(n, sd = sig.epsilon) ## noise ~ N(0, sig.epsilon)
+  beta = c(p:2,0) # p beta coefficients
+  beta.0 = 3 # an intercept
+  y = beta.0 + X %*% beta + epsilon # the linear model
+  df = data.frame(y, X) # put it all in a data frame
+  return(df) # output
+}
+```
+
+## Getting the data
+
+Use the function above (see HW1 or IC3) to generate data from a linear model.
+
+```{r generate-data}
+dat = generate.data(X)
+```
+
+## Estimate the regression
+
+Estimate 2 linear models: (1) on all four predictors, (2) on the first 3 predictors. For each model, calculate the RSS. Find the difference between RSS(small)-RSS(large). Find the residual degrees of freedom (`n-p`) for both models.
+
+```{r estimate}
+lm.large = lm(y~.,data=dat)
+lm.small = lm(y~.-X4, data=dat)
+RSS.large = sum(residuals(lm.large)^2)
+RSS.small = sum(residuals(lm.small)^2)
+RSS.diff = RSS.small - RSS.large
+res.df.large = lm.large$df.residual
+res.df.small = lm.small$df.residual
+```
+
+## Perform the F test two ways
+
+Write a function which calculates the F-statistic given two fitted, nested `lm` objects. 
+\[
+F = \frac{(RSS_{small}-RSS_{large})/(res.df_{small}-res.df_{large})}{RSS_{large}/res.df_{large}}
+\]
+Calculate the statistic for your above models, and calculate the p-value using `pf(Fstat,dfnum,dfdenom,lower.tail=FALSE)`.
+Does this F-stat and p-value match the output of the `anova` applied to the two models?
+
+
+```{r f-test}
+Fstat <- function(small, large){
+  ## Takes in 2 fitted, nested lm objects
+  num = (sum(residuals(small)^2)-sum(residuals(large)^2))/
+    (small$df.residual-large$df.residual)
+  denom = sum(residuals(large)^2)/large$df.residual
+  return(num/denom)
+}
+fs = Fstat(lm.small, lm.large)
+pval = pf(fs, 1, lm.large$df.residual, lower.tail = FALSE)
+anova(lm.small,lm.large)
+```
+
+## Simulate the F test
+
+Now, follow the slides and use the code below. Simulate the test statistic 1000 times. Plot the simulated density, the true F-density, and the observed test statistic. Print both p-values.
+
+
+```{r simulate-f-test}
+simulate.from.lm <- function(df, mdl) { # altered to work with any lm output
+  yhat <- predict(mdl) 
+  newy <- yhat + rnorm(nrow(df), sd = summary(mdl)$sigma)
+  df[[names(mdl$model)[1]]] <- newy # the names part, gets the response from the df
+  return(df)
+}
+
+# Simulate from an estimated linear model, and refit both the large and small lm
+# Inputs: data frame with covariates (df), fitted small lm (small), fitted large lm (large)
+# Output: the Fstat
+Fstat.sim <- function (df, small, large) {
+  sim.df <- simulate.from.lm(df, small)
+  small.sim <- lm(formula(small),data=sim.df) # used formulas instead
+  large.sim = lm(formula(large), data=sim.df)
+  return(Fstat(small.sim,large.sim))
+}
+
+testDist = replicate(1000, Fstat.sim(dat, lm.small, lm.large))
+```
+
+```{r, message=FALSE,warning=FALSE}
+library(tidyverse)
+library(cowplot)
+ggplot(data.frame(x=testDist), aes(x)) + geom_density(color="darkorange") +
+  stat_function(fun = stats::df, color="darkgreen",
+                args=list(df1=res.df.small-res.df.large, df2=res.df.large)) +
+  coord_cartesian(ylim=c(0,.8), expand = expand_scale()) + theme_cowplot() +
+  geom_vline(xintercept = fs, color="darkblue")
+c(pval,mean(testDist>fs))
+```

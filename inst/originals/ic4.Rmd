@@ -1,0 +1,78 @@
+---
+title: "In class 4"
+author: "[Your names here]"
+date: "4 February 2020"
+output: 
+  html_document:
+    highlight: tango
+---
+
+## Instructions
+
+1. Rename this document with your student ID (not the 10-digit number, your IU username, e.g. `dajmcdon`). Include your buddy if you are working together.
+1. Examine the function below called `generate.data`.
+1. Answer the question about the marked line by `X`.
+1. Fill in the missing bits in the `intervals` function.
+1. In part 3, call the function `intervals` for 25 different correlations. Each time, save the output.
+1. Repeat the above step 50 times. Find the average width for each correlation over the 50 replications.
+1. Plot the average __width__ of the CI against `cors`.
+
+
+## Functions to examine and complete
+
+```{r functions-to-create}
+library(ggplot2)
+# This function generates Y, X1, and X2
+## Inputs: n, the number of data points
+##         cor, the correlation between X1 and X2
+## Outputs: a data frame
+generate.data <- function(n, cor){
+  epsilon = rnorm(n)
+  X = matrix(rnorm(2*n),nrow=n) %*% 
+    chol(matrix(c(1, cor, cor,1), 2, 2))
+  ## See the question below about X
+  beta = c(3, 2, 1)
+  Y = cbind(1, X) %*% beta + epsilon
+  df = data.frame(Y, X)
+  return(df)
+}
+
+## This function finds confidence interval widths 
+## for the Linear model
+## Inputs: n, the number of data points
+##         cor, the correlation between X1 and X2
+## Outputs: avg, the average width of the confidence 
+##               intervals for the regression
+intervals <- function(n, cor){
+  df = generate.data(n, cor) 
+  mdl = lm(Y~X1+X2, data=df)
+  itvals =  ## Get the confidences intervals for the bhats (95%)
+  widths =   ## Find the width of each interval
+  avg =   ## get the average width, ignore intercept
+  return(avg)
+}
+
+n = 250
+ncors = 25
+cors = 1 / (1 + exp(-seq(-5,5,length.out = ncors)))*2 - 1
+```
+
+## What is the the marked line in `generate.data` doing? Why did I multiply by some matrix?
+
+
+## Running the simulation and plotting
+
+```{r eval-and-plot}
+## calculate the average width for each value of cors
+## repeat the experiment 50 times
+    
+avg.widths = 
+
+## plot cors (x-axis) vs. average widths (y-axis)
+
+##    label your axes nicely
+##    make the y-axis on the log scale
+```
+
+## How does correlation affect confidence intervals?
+

@@ -1,0 +1,29 @@
+---
+title: 'IC6: More gradient descent (MLEs)'
+author: '[Creative team name]'
+date: "20 February 2020"
+output: html_document
+---
+
+Recall "Maximum likelihood estimation". We're going to do this by hand. The Poisson Likelihood is given by
+\[
+L(\lambda ; y_1,\ldots,y_n) = \prod_{i=1}^n \frac{\lambda^{y_i}\exp(-\lambda)}{y_i!}.
+\]
+
+1. Generate $n=100$ observations from a Poisson distribution with parameter $\lambda=3$.
+
+
+2. Examine the slide from class. What key ingredient do I need to make this work?
+
+
+
+3. Remember that if I use a monotone function like `log`, I don't change the minimizer. Use this trick!! Write a function which gives the key ingredient as a function of $\lambda$.
+
+
+4. Suppose $\lambda=1$, $y_1=3$, $y_2=5$. What value should your function return? Check that it does.
+
+
+
+
+5. Using your data and my sample code from class, __maximize__ the loglikelihood and report the maximizer. Use `gam=.01` and start at 23. Set `tol=1e-5`. Is this the value you would expect? What should the answer be?
+ 

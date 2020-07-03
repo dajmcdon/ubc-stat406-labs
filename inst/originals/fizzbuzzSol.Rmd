@@ -1,0 +1,59 @@
+---
+title: "FizzBuzz Solution"
+author: "DJM"
+date: "22 January 2020"
+---
+
+## Task 1 - Implementation
+
+```{r the-fizzbuzz-function}
+fizzbuzz <- function(v, maxprint = 100, tol=1e-10)
+{
+  # v is an input vector
+  # I added an optional argument to avoid printing too many things
+  # I also added a tolerance for integer checking, see below
+  stopifnot(is.numeric(v), all(is.finite(v))) # makes sure these are finite numbers
+  # integer testing is a bit more difficult
+  # e.g. is.integer(1) is FALSE
+  # you could try all(v %% 1 == 0), this mostly works
+  # the problem is really a numeric one, things like 1e-20 are "almost" integers,
+  # so we should decide what to do with them here is one reasonable way
+  stopifnot(all(dplyr::near(v, as.integer(v))))
+  # Now that that's done...
+  # This is one way to write this code, it is not the only way
+  for(iter in 1:min(length(v),maxprint)){
+    # I don't want it to print too much stuff
+    if(v[iter] %% 15 == 0){
+      print('FizzBuzz')
+      next # jumps to the top of the loop and the next iteration
+      # my goal here is to illustrate the use of 'next' as well
+      # as avoid a pile of nested "if-else" statements
+    }
+    if(v[iter] %% 5 == 0){
+      print('Buzz')
+      next
+    }
+    if(v[iter] %% 3 == 0){
+      print('Fizz')
+      next
+    }
+    print(v[iter])
+  }
+  invisible(v) # returns the original v if assigned
+}
+```
+
+## Task 2 - Validation
+
+
+```{r testing-the-function, error=TRUE}
+fizzbuzz(1)
+fizzbuzz(3)
+fizzbuzz(5)
+fizzbuzz(15)
+fizzbuzz(9:15)
+fizzbuzz(15:9)
+fizzbuzz(Inf)
+fizzbuzz("A")
+fizzbuzz(1.5)
+```

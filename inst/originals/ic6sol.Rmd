@@ -1,0 +1,58 @@
+---
+title: 'IC6: More gradient descent (MLEs)'
+author: 'DJM'
+date: "20 February 2020"
+output: html_document
+---
+
+Recall "Maximum likelihood estimation". We're going to do this by hand. The Poisson Likelihood is given by
+\[
+L(\lambda ; y_1,\ldots,y_n) = \prod_{i=1}^n \frac{\lambda^{y_i}\exp(-\lambda)}{y_i!}.
+\]
+
+1. Generate $n=100$ observations from a Poisson distribution with parameter $\lambda=3$.
+
+```{r get-data}
+y = rpois(100, 3)
+```
+
+2. Examine the slide from class. What key ingredient do I need to make this work?
+
+I need the derivative of the likelihood.
+
+3. Remember that if I use a monotone function like `log`, I don't change the minimizer. Use this trick!! Write a function which gives the key ingredient as a function of $\lambda$.
+
+```{r}
+deriv_loglike <- function(lambda, y){
+  sum(-1 + y/lambda)
+}
+```
+
+4. Suppose $\lambda=1$, $y_1=3$, $y_2=5$. What value should your function return? Check that it does.
+
+You should get $3+5-2=6$. My function gives `r deriv_loglike(1,c(3,5))`.
+
+5. Using your data and my sample code from class, __maximize__ the loglikelihood and report the maximizer. Use `gam=.01` and start at 23. Set `tol=1e-5`. Is this the value you would expect? What should the answer be?
+
+I should see $\lambda = \overline{y} =$ `r mean(y)`.
+
+```{r}
+maxiter = 1000
+conv = FALSE
+gam = 0.01
+lam = 23
+tol = 1e-5
+for(iter in  1:maxiter){
+  lam.new = lam + gam * deriv_loglike(lam, y)
+  conv = abs(lam - lam.new) < tol
+  lam = lam.new
+  if(conv) break
+}
+lam
+```
+
+
+
+
+
+

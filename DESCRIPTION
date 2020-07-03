@@ -21,3 +21,5 @@ Imports:
     ggplot2,
     cowplot,
     gradethis
+Depends: 
+    R (>= 2.10)

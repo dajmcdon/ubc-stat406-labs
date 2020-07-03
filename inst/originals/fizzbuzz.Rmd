@@ -1,0 +1,46 @@
+---
+title: "In-class 2"
+author: "[your names here]"
+date: "22 January 2020"
+---
+
+
+ 
+## Task 1 - Implementation
+
+<!--
+Use this section to implement the fizzbuzz function.
+
+This should include a short write up describing your approach
+to implementing the function. 
+-->
+
+```{r the-fizzbuzz-function}
+fizzbuzz = function(v)
+{
+ 1+1/(3)
+}
+```
+ 
+ 
+## Task 2 - Validation
+
+<!--
+Use this section to show the output of your 
+fizzbuzz function for various inputs
+
+No writeup is necessary for this section.
+-->
+
+ 
+```{r testing-the-function, error=TRUE}
+fizzbuzz(1)
+fizzbuzz(3)
+fizzbuzz(5)
+fizzbuzz(15)
+fizzbuzz(9:15)
+fizzbuzz(15:9)
+fizzbuzz(Inf)
+fizzbuzz("A")
+fizzbuzz(1.5)
+```

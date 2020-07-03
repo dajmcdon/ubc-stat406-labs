@@ -1,0 +1,84 @@
+---
+title: "IC11: The curse of dimensionality"
+author: "Solution"
+date: "14 April 2020"
+output: html_document
+---
+
+## Instructions
+
+1. Rename this document with your student ID (not the 10-digit number, your IU username, e.g. `dajmcdon`). Include your buddy in the author field if you are working together.
+2. Follow the instructions in each section.
+
+## Exercise 4 (ISL 4)
+
+When the number of features $p$ is large, there tends to be a deterioration in the performance of KNN and other _local_ approaches that perform prediction using only observations that are _near_ the test observation for which a prediction must be made. This phenomenon is known as the _curse of dimensionality_, and it ties into the fact that non-parametric approaches often perform poorly when $p$ is large. We will now investigate this curse.
+
+1. Suppose that we have a set of observations, each with measurements on $p = 1$ feature, `X`. We assume that `X` is uniformly distributed on $[0,1]$. Associated with each observation is a response value. Suppose that we wish to predict a test observation’s response using only observations that are within 10 % of the range of `X` closest to that test observation. For instance, in order to predict the response for a test observation with `X = 0.6`, we will use observations in the range `[0.55,0.65]`. On average, what fraction of the available observations will we use to make the prediction?
+
+Solution: 10%
+
+2. Now suppose that we have a set of observations, each with measurements on $p = 2$ features, `X1` and `X2`. We assume that `(X1,X2)` are uniformly distributed on $[0,1]\times[0,1]$. We wish to predict a test observation’s response using only observations that are within 10 % of the range of `X1` _and_ within 10 % of the range of `X2` closest to that test observation. For instance, in order to predict the response for a test observation with `X1 = 0.6` and `X2 = 0.35`, we will use observations in the range `[0.55, 0.65]` for `X1` and in the range `[0.3, 0.4]` for `X2`. On average, what fraction of the available observations will we use to make the prediction?
+
+Solution: 1%
+
+3. Now suppose that we have a set of observations on $p = 100$ features. Again the observations are uniformly distributed on each feature, and again each feature ranges in value from 0 to 1. We wish to predict a test observation’s response using observations within the 10 % of each feature’s range that is closest to that test observation. What fraction of the available observations will we use to make the prediction?
+
+Solution: $0.1^{100} \approx 0$
+
+4. Using your answers to parts (1)–(3), argue that a drawback of KNN when $p$ is large is that there are very few training observations "near" any given test observation.
+
+Solution: As $p$ increases, the number of "near" neighbors decreases exponentially. So, points that are neighbors will not actually be that similar to each other.
+
+5. Now suppose that we wish to make a prediction for a test observation by creating a $p$-dimensional hypercube centered around the test observation that contains, on average, 10 % of the training observations. For $p = 1,2,$ and 100, what is the length of each side of the hypercube? Comment on your answer. Note: A hypercube is a generalization of a cube to an arbitrary number of dimensions. When $p = 1$, a hypercube is simply a line segment, when $p = 2$ it is a square, and when $p = 100$ it is a 100-dimensional cube.
+
+Solution: The volume of the hypercube is equal to it's probability. A $p$-dimensional hypercube with sides of length $l$ will have volume $l^p$. Therefore, if we want volume equal to 10%, we need $l= .1, \sqrt{.1},$ and $\sqrt[100]{.1}$. That is $l=.1$, `r signif(sqrt(.1),3)`, and `r signif(.1^(1/100),3)`.
+
+
+## Data analysis
+
+```{r load-data-and-plot, message=FALSE}
+data("iris")
+iris$Species = as.factor(iris$Species == 'virginica')
+levels(iris$Species) = c('not virginica','virginica')
+library(GGally)
+library(tidyverse)
+library(MASS)
+library(class)
+library(cowplot)
+ggpairs(iris, aes(color=Species), columns=1:4) + theme_cowplot()
+```
+
+Estimate logistic regression and LDA using the `iris` data. Does logistic regression throw a warning? Why?
+
+Solution: Yes. The two classes are perfectly separable, so the MLE is undefined. The result is one of (infitely) many possible solutions.
+
+```{r estimate-linear-models}
+logit_iris = glm(Species~., data=iris, family = 'binomial')
+lda_iris = lda(Species~., data=iris)
+```
+
+Estimate knn using a range of k. Choose the best k using CV as in the lecture.
+
+```{r estimate-knn}
+kmax = 20
+err = double(kmax)
+for(ii in 1:kmax){
+  pk = knn.cv(iris[,-5],iris$Species, k=ii) # does leave one out CV
+  err[ii] = mean(pk != iris$Species)
+}
+ggplot(data.frame(k=1:kmax,error=err), aes(k,error)) + geom_point(color='red') +
+  geom_line(color='red') + theme_cowplot()
+```
+
+
+Which method has the lowest classification error?
+
+```{r}
+tibble(
+  logit = mean(as.integer(predict(logit_iris, type="response") > 0.5) !=
+                 as.integer(iris$Species)-1),
+  lda = mean(predict(lda_iris)$class != iris$Species),
+  knn = mean(iris$Species !=knn(iris[,-5], iris[,-5], k=which.min(err), cl=iris$Species))
+)
+```
