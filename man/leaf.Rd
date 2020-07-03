@@ -5,7 +5,20 @@
 \alias{leaf}
 \title{Properties of 340 leaves}
 \format{
-A tibble with 340 rows and 17 variables:
+An object of class \code{spec_tbl_df} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 340 rows and 17 columns.
+}
+\source{
+\url{https://archive.ics.uci.edu/ml/datasets/Leaf}
+}
+\usage{
+leaf
+}
+\description{
+A dataset containing attributes of a pile of leaves
+}
+\details{
+The variables are (roughly) described below. More details as well as the
+actual images are available at the UCI ML repository.
 \enumerate{
 \item Species - A number from 1 to 36 indicating which species the leaf represents
 \item Specimen Number - Numbered sequentially within species
@@ -24,14 +37,5 @@ A tibble with 340 rows and 17 variables:
 \item Uniformity - uniformity’s maximum value is reached when all intensity levels are equal.
 \item Entropy - A measure of intensity randomness.
 }
-}
-\source{
-\url{https://archive.ics.uci.edu/ml/datasets/Leaf}
-}
-\usage{
-leaf
-}
-\description{
-A dataset containing attributes of a pile of leaves
 }
 \keyword{datasets}

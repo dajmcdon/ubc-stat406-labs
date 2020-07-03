@@ -1,0 +1,27 @@
+---
+title: "IC13: Predicting economic mobility"
+author: "[Your name here]"
+date: "28 April 2020"
+output: html_document
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(echo=FALSE, fig.align='center', fig.width=4, fig.height=3,
+               cache=TRUE, autodep=TRUE, cache.comments=FALSE,
+               message=FALSE, warning=FALSE)
+```
+
+Your goal is to use this data to predict economic mobility. Note that there are generally more observations than predictors. You should definitely exclude some variables in the data (which ones?).
+
+```{r load-data}
+mob = read.csv('mobility.csv')
+```
+
+1. Using `glmnet`, estimate 4 models: the linear model, ridge regression, the lasso, and the elastic net ($\alpha=.5$). Don't use the variables `ID`, `Name`, or `State` (Why?)
+
+2. Plot the CV curves for each of the three regularized models (easy).
+
+3. Use `lambda.min` to get a particular model for each of the regularized ones.
+
+4. Plot the coefficients for each of the 4 models on one figure. What do you notice? Which features are most important?

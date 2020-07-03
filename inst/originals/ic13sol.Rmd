@@ -1,0 +1,72 @@
+---
+title: "IC13: Predicting economic mobility"
+author: "Solution"
+date: "28 April 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+opts_chunk$set(echo=FALSE, fig.align='center', fig.width=8, fig.height=8,
+               cache=TRUE, autodep=TRUE, cache.comments=FALSE,
+               message=FALSE, warning=FALSE)
+```
+
+Your goal is to use this data to predict economic mobility. Note that there are generally more observations than predictors.
+
+```{r load-data}
+mob = read.csv('mobility.csv')
+```
+
+1. Using `glmnet`, estimate 4 models: the linear model, ridge regression, the lasso, and the elastic net ($\alpha=.5$). Don't use the variables `ID`, `Name`, or `State` (Why?)
+
+2. Plot the CV curves for each of the three regularized models (easy).
+
+3. Use `lambda.min` to get a particular model for each of the regularized ones.
+
+4. Plot the coefficients for each of the 4 models on one figure. What do you notice? Which features are most important?
+
+
+```{r model-fitting}
+library(glmnet)
+linmod = lm(Mobility~.-ID-Name-State, data=mob, y=TRUE)
+X = model.matrix(linmod)[,-1]
+y = linmod$y
+lasso = cv.glmnet(X, y)
+ridge = cv.glmnet(X, y, alpha=0, lambda.min.ratio=1e-6)
+enet = cv.glmnet(X,y,alpha=.5)
+```
+
+```{r cvplots}
+par(mfrow=c(2,2))
+plot(lasso)
+plot(ridge)
+plot(enet)
+par(mfrow=c(1,1))
+```
+
+
+For `enet` and `lasso`, `lambda.1se` gives sparser models. For `ridge`, use `lambda.min` (more like GCV).
+
+```{r models}
+lasso1 = as.numeric(coef(lasso, 'lambda.min'))
+enet1 = as.numeric(coef(enet, 'lambda.min'))
+ridge1 = as.numeric(coef(ridge, 'lambda.min'))
+```
+
+
+```{r plot-coefs}
+ord = order(coef(linmod))
+df = data.frame(lm = coef(linmod)[ord], lasso = lasso1[ord],
+                elnet = enet1[ord], ridge = ridge1[ord])
+df$var = rownames(df) 
+df %>% mutate(var = str_replace_all(var, "_"," ")) %>%
+  pivot_longer(names_to='method',values_to ='estimate', -var) %>%
+  ggplot(aes(y=var,x=estimate,color=method)) + geom_point() + 
+  geom_vline(xintercept = 0) +
+  cowplot::theme_cowplot() + 
+  scale_color_viridis_d(direction = -1) +
+  theme(axis.title.y = element_blank())
+  #scale_x_continuous(trans = scales::pseudo_log_trans(sigma=.1))
+```
