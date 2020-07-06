@@ -31,7 +31,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 Examine the function below called `generate.data`.
 
-```{r, echo=TRUE}
+```{r generatedata, echo=TRUE}
 generate.data <- function(n, cor){
   epsilon = rnorm(n)
   X = matrix(rnorm(2*n),nrow=n) %*% 
@@ -92,7 +92,7 @@ Next, we will examine the confidence intervals associated with $\beta_1$ and $\b
 
 After filling in the missing bits, test your function with n=250 and cor=0.5.
 
-```{r confint, exercise=TRUE,exercise.lines = 18}
+```{r confint, exercise=TRUE, exercise.setup="generatedata", exercise.lines = 18}
 ## This function finds confidence interval widths 
 ## for the Linear model
 ## Inputs: n, the number of data points
@@ -113,6 +113,15 @@ intervals(n=____,cor=____)
 ```
 
 ```{r confint-check}
+generate.data <- function(n, cor){
+  epsilon = rnorm(n)
+  X = matrix(rnorm(2*n),nrow=n) %*% 
+    chol(matrix(c(1, cor, cor,1), 2, 2))
+  beta = c(3, 2, 1)
+  Y = cbind(1, X) %*% beta + epsilon
+  df = data.frame(Y, X)
+  return(df)
+}
 intervals <- function(n, cor){
   df = generate.data(n, cor) 
   mdl = lm(Y~X1+X2, data=df)
@@ -121,7 +130,6 @@ intervals <- function(n, cor){
   avg = mean(widths[-1]) ## get the average width, ignore intercept
   return(avg)
 }
-
 intervalsintercept <- function(n, cor){
   df = generate.data(n, cor) 
   mdl = lm(Y~X1+X2, data=df)
@@ -148,7 +156,7 @@ grade_result(
 
 ### The solution should look something like:
 
-```{r echo=TRUE}
+```{r intervalfunc, echo=TRUE}
 ## This function finds confidence interval widths 
 ## for the Linear model
 ## Inputs: n, the number of data points
@@ -184,18 +192,30 @@ cors
 
 ###
 
-```{r}
-## This function finds confidence interval widths 
-## for the Linear model
-## Inputs: n, the number of data points
-##         cor, the correlation between X1 and X2
-## Outputs: avg, the average width of the confidence 
-##               intervals for the regression
+Now, let's use the `intervals` function to calculate the interval width for each of these correlations.  Let's perform the experiment with 50 simulations each.  While this could be performed with a couple of loops.  It is faster (and easier?) to use `sapply`.
+
+```{r simcor2-setup}
+generate.data <- function(n, cor){
+  epsilon = rnorm(n)
+  X = matrix(rnorm(2*n),nrow=n) %*% 
+    chol(matrix(c(1, cor, cor,1), 2, 2))
+  beta = c(3, 2, 1)
+  Y = cbind(1, X) %*% beta + epsilon
+  df = data.frame(Y, X)
+  return(df)
+}
+intervals <- function(n, cor){
+  df = generate.data(n, cor) 
+  mdl = lm(Y~X1+X2, data=df)
+  itvals = confint(mdl) ## Get the confidences intervals for the bhats (95%)
+  widths = itvals %*% c(-1,1) ## Find the width of each interval
+  avg = mean(widths[-1]) ## get the average width, ignore intercept
+  return(avg)
+}
 ncors = 25
 cors = 1 / (1 + exp(-seq(-5,5,length.out = ncors)))*2 - 1
 ```
 
-Now, let's use the `intervals` function to calculate the interval width for each of these correlations.  Let's perform the experiment with 50 simulations each.  While this could be performed with a couple of loops.  It is faster (and easier?) to use `sapply`.
 
 ```{r simcor2, exercise=TRUE, exercise.lines = 7}
 ## calculate the average width for each value of cors
@@ -205,16 +225,32 @@ avg.widths = rowMeans(avg.widths)
 avg.widths
 ```
 
-```{r}
-## calculate the average width for each value of cors
-## repeat the experiment 50 times
-avg.widths = replicate(50, sapply(cors, intervals, n=250))
-avg.widths = rowMeans(avg.widths)
-```
-
 ###
 
 Finally, let's plot these values using ggplot.  Run the following code:
+```{r plotcors-setup}
+generate.data <- function(n, cor){
+  epsilon = rnorm(n)
+  X = matrix(rnorm(2*n),nrow=n) %*% 
+    chol(matrix(c(1, cor, cor,1), 2, 2))
+  beta = c(3, 2, 1)
+  Y = cbind(1, X) %*% beta + epsilon
+  df = data.frame(Y, X)
+  return(df)
+}
+intervals <- function(n, cor){
+  df = generate.data(n, cor) 
+  mdl = lm(Y~X1+X2, data=df)
+  itvals = confint(mdl) ## Get the confidences intervals for the bhats (95%)
+  widths = itvals %*% c(-1,1) ## Find the width of each interval
+  avg = mean(widths[-1]) ## get the average width, ignore intercept
+  return(avg)
+}
+ncors = 25
+cors = 1 / (1 + exp(-seq(-5,5,length.out = ncors)))*2 - 1
+avg.widths = replicate(50, sapply(cors, intervals, n=250))
+avg.widths = rowMeans(avg.widths)
+```
 
 ```{r plotcors, exercise=TRUE, exercise.lines = 12}
 ## plot cors (x-axis) vs. average widths (y-axis)
