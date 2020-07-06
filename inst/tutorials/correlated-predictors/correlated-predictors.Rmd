@@ -29,7 +29,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Data Generation Function
 
-Examine the function below called `generate.data`.
+Examine the function below called `generate.data()`.
 
 ```{r generatedata, echo=TRUE}
 generate.data <- function(n, cor){
@@ -88,7 +88,7 @@ get the square root.
 
 ## Confidence Interval Widths
 
-Next, we will examine the confidence intervals associated with $\beta_1$ and $\beta_2$.  The function `intervals` below is supposed to calculate the average width of these two intervals, but first you need to fill in the missing bits so that it works.
+Next, we will examine the confidence intervals associated with $\beta_1$ and $\beta_2$.  The function `intervals()` below is supposed to calculate the average width of these two intervals, but first you need to fill in the missing bits so that it works.
 
 After filling in the missing bits, test your function with n=250 and cor=0.5.
 
@@ -102,14 +102,14 @@ After filling in the missing bits, test your function with n=250 and cor=0.5.
 intervals <- function(n, cor){
   df = generate.data(n, cor) 
   mdl = lm(Y~X1+X2, data=df)
-  itvals =  ## Get the confidences intervals for the bhats (95%)
-  widths =   ## Find the width of each interval
-  avg =   ## get the average width, ignore intercept
+  itvals = ___  ## Get the confidences intervals for the bhats (95%)
+  widths = ___   ## Find the width of each interval
+  avg = ___   ## get the average width, ignore intercept
   return(avg)
 }
 
 set.seed(07042020)
-intervals(n=____,cor=____)
+intervals(n= ___, cor= ___)
 ```
 
 ```{r confint-check}
@@ -157,12 +157,6 @@ grade_result(
 ### The solution should look something like:
 
 ```{r intervalfunc, echo=TRUE}
-## This function finds confidence interval widths 
-## for the Linear model
-## Inputs: n, the number of data points
-##         cor, the correlation between X1 and X2
-## Outputs: avg, the average width of the confidence 
-##               intervals for the regression
 intervals <- function(n, cor){
   df = generate.data(n, cor) 
   mdl = lm(Y~X1+X2, data=df)
@@ -176,15 +170,9 @@ intervals <- function(n, cor){
 ## Simulating Interval Widths
 This last part will have you examine and visualize the interval widths for 25 different correlations.
 
-As you should be hopefully aware, the correlation is a value that must run between -1 and 1.  Setting `ncors` to 25, the following code generates a sequence of correlation values to simulate intervals.
+As you should be hopefully aware, the correlation is a value that must run between -1 and 1.  Setting `ncors` to 25, the following code generates a sequence of logarithmically-spaced correlation values.
 
-```{r simcor, exercise=TRUE, exercise.lines = 11}
-## This function finds confidence interval widths 
-## for the Linear model
-## Inputs: n, the number of data points
-##         cor, the correlation between X1 and X2
-## Outputs: avg, the average width of the confidence 
-##               intervals for the regression
+```{r simcor, exercise=TRUE, exercise.lines = 3}
 ncors = ___
 cors = 1 / (1 + exp(-seq(-5,5,length.out = ncors)))*2 - 1
 cors
@@ -192,7 +180,7 @@ cors
 
 ###
 
-Now, let's use the `intervals` function to calculate the interval width for each of these correlations.  Let's perform the experiment with 50 simulations each.  While this could be performed with a couple of loops.  It is faster (and easier?) to use `sapply`.
+Now, let's use the `intervals()` function to calculate the interval width for each of these correlations.  Let's perform the experiment with 50 simulations each.  While this could be performed with a couple of loops.  It is faster (and easier?) to use `replicate()` and `sapply()`.
 
 ```{r simcor2-setup}
 generate.data <- function(n, cor){
@@ -252,17 +240,15 @@ avg.widths = replicate(50, sapply(cors, intervals, n=250))
 avg.widths = rowMeans(avg.widths)
 ```
 
-```{r plotcors, exercise=TRUE, exercise.lines = 12}
-## plot cors (x-axis) vs. average widths (y-axis)
-##    label your axes nicely
-##    make the y-axis on the log scale
-# plot(cors, avg.widths, las=1, log='y', xlab='correlation')
+```{r plotcors, exercise=TRUE}
 dat = data.frame(correlation=cors, avg.widths=avg.widths)
 library(ggplot2)
 ggplot(dat, aes(correlation, avg.widths)) + 
   geom_path(color="orange",size=2) +
   geom_point(color="purple", size=2) + 
   scale_y_log10() + theme_minimal()
+# If you don't like ggplot, try
+# plot(cors, avg.widths, las=1, log='y', xlab='correlation')
 ```
 
 ```{r cor3-quiz}
