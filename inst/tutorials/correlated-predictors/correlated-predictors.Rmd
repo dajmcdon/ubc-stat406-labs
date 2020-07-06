@@ -1,5 +1,5 @@
 ---
-title: "Tutorial"
+title: "Correlated predictors"
 author: DJM
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output: 
