@@ -201,11 +201,11 @@ Examine the hatvalues for the 4 different models. What do you notice?
 
 Models 1 and 2 use the same $X$ so the hat values are identical.  Same can be said for Models 3 and 4 that both use the log transformation of $X$.  When looking at the other model comparison, they are nearly the same, except they diverge a bit for larger values. Remember, the hat values are the diagonals of $X(X' X)^{-1} X'$. So as long as $X$ doesn't change much, the hat values don't change much. The log transformation changes $X$ very slightly for small values, but has more of an impact on larger values.
 
-## Coefficient of Variation
+## Cross-Validation
 
 ### Residuals
 
-The following code computes the coefficient of variation for each of the four models.
+The following code performs cross-validation for each of the four models.
 
 ```{r cv-setup}
 generate.data = function(n, p=3){
@@ -245,10 +245,10 @@ Is it reasonable to compare the CV values for models 1 and 3 with those of model
 ```{r gen4-quiz}
 quiz(caption="Question 4",
   question("Is it reasonable to compare the CV values for models 1 and 3 with those of models 2 and 4? Why or why not?",
-    answer("Yes, Models 2 and 4 have a much lower CV and are thus better."),
-    answer("Yes, Models 1 and 3 have a much higher CV and are thus better."),
+    answer("Yes, Models 2 and 4 have a much lower CV value and are thus better."),
+    answer("Yes, Models 1 and 3 have a much higher CV value and are thus better."),
     answer("No, the residuals are on different scales so it is unfair to compare", correct=TRUE, message="One is measuring absolute errors, while the other is more like percent errors."),
-    answer("Yes, the coefficient of variation corrects for any mismatch in scaling."),
+    answer("Yes, performing cross-validation corrects for any mismatch in scaling."),
     allow_retry = TRUE
   )
 )
