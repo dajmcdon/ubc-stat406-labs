@@ -1,0 +1,94 @@
+---
+title: "Week 5: Models large and small"
+author: "Solution"
+date: "23 October 2018"
+output: html_document
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(echo=TRUE, fig.align='center', fig.width=4, fig.height=3,
+               cache=TRUE, autodep=TRUE, cache.comments=FALSE,
+               message=FALSE, warning=FALSE)
+```
+
+1. Generate data from a linear model without intercept. Let $X_{ij}$ and $\epsilon_i$ be iid standard Gaussian. Set $p=30$ and $n=100$. Set the first 5 $\beta_j = 1$ ($j=1,\ldots,5$), the rest are zero.
+
+```{r generate-data}
+library(glmnet)
+set.seed(20181023)
+n=100
+p=30
+X = matrix(rnorm(n*p),n)
+beta = c(rep(1,5),rep(0,p-5))
+Y = c(X %*% beta + rnorm(n))
+```
+
+2. Fit LASSO to this data set. Calculate CV, AIC, and BIC. One can show that an unbiased estimator of the degrees of freedom is the number of selected covariates. Use the "unknown variance" version, ($\log(RSS)$)
+
+```{r functions}
+rss <- function(cvglmnetobj, Y, X){
+  colMeans( (Y - predict(cvglmnetobj$glmnet.fit, newx=X))^2)
+}
+
+aic <- function(cvglmnetobj, Y,  X){
+  like = rss(cvglmnetobj, Y,  X)
+  df = colSums(abs(out$glmnet.fit$beta) > 0 )
+  log(like) + 2*(df+1)/length(Y)
+}
+
+bic <- function(cvglmnetobj, Y,  X){
+  n = length(Y)
+  like = rss(cvglmnetobj, Y,  X)
+  df = colSums(abs(out$glmnet.fit$beta) > 0 )
+  log(like) + 2*(df+1)*log(n)/n
+}
+```
+
+```{r selections}
+out = cv.glmnet(X,Y, intercept=FALSE)
+bestmodels = list(
+  AIC = out$glmnet.fit$beta[,which.min(aic(out, Y, X))],
+  BIC = out$glmnet.fit$beta[,which.min(bic(out, Y, X))],
+  CV = c(coef(out, s='lambda.min')[-1,])
+)
+```
+
+3. For each model selection crieterion, how many of the correct coefficients do you select? How many incorrect?
+
+```{r error-rate}
+errs <- function(b,beta){
+  TP = sum((abs(b) > 0 & abs(beta)>0))
+  FP = sum((abs(b)>0 & beta==0))
+  c(TP,FP)
+}
+tab = sapply(bestmodels,errs,beta=beta)
+rownames(tab) = c('true positives','false positives')
+kable(tab)
+```
+
+
+4. Repeat the same exercise but using $p=300$.
+```{r generate-data-big}
+library(glmnet)
+set.seed(20181023)
+n=100
+p=300
+X = matrix(rnorm(n*p),n)
+beta = c(rep(1,5),rep(0,p-5))
+Y = c(X %*% beta + rnorm(n))
+out = cv.glmnet(X,Y, intercept=FALSE)
+bestmodels = list(
+  AIC = out$glmnet.fit$beta[,which.min(aic(out, Y, X))],
+  BIC = out$glmnet.fit$beta[,which.min(bic(out, Y, X))],
+  CV = c(coef(out, s='lambda.min')[-1,])
+)
+tab = sapply(bestmodels,errs,beta=beta)
+rownames(tab) = c('true positives','false positives')
+kable(tab)
+```
+
+
+5. What do you notice?
+
+There's not a huge difference in low dimensions. AIC and CV are essentially the same, picking slightly larger models than BIC. With $p=300$, AIC drastically over-selects (it chooses the largest model it can, based on the path). BIC does quite well, CV slightly over-selects. In all cases, the true coefficients are always included (the signal-to-noise ratio is pretty large).

@@ -1,0 +1,23 @@
+---
+title: "Week 5: Models large and small"
+author: "[Your name here]"
+date: "23 October 2018"
+output: html_document
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(echo=TRUE, fig.align='center', fig.width=4, fig.height=3,
+               cache=TRUE, autodep=TRUE, cache.comments=FALSE,
+               message=FALSE, warning=FALSE)
+```
+
+1. Generate data from a linear model. Let $X_{ij}$ and $\epsilon_i$ be iid standard Gaussian. Set $p=30$ and $n=100$. Set the first 5 $\beta_j = 1$ ($j=1,\ldots,5$), the rest are zero.
+
+2. Fit LASSO to this data set. Calculate CV, AIC, and BIC. One can show that an unbiased estimator of the degrees of freedom is the number of selected covariates. Use the "unknown variance" version.
+
+3. For each model selection crieterion, how many of the correct coefficients do you select? How many incorrect?
+
+4. Repeat the same exercise but using $p=300$.
+
+5. What do you notice?

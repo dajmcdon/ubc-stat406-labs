@@ -1,0 +1,63 @@
+---
+title: "Week 9"
+author: '[your name here]'
+date: "11/13/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, 
+               fig.align='center',fig.width=6,
+               fig.height=6, cache=TRUE, autodep = TRUE)
+library(tidyverse)
+theme_set(theme_minimal(base_family="Times"))
+```
+
+## Some data
+
+```{r circles-data}
+library(tidyverse)
+tt = seq(0,2*pi,len=50)
+tt2 = seq(0,2*pi,len=75)
+c1 = data.frame(x=cos(tt),y=sin(tt),grp=1)
+c2 = data.frame(x=1.5*cos(tt2),y=1.5*sin(tt2),grp=2)
+circles = bind_rows(c1,c2)
+n = nrow(circles)
+ggplot(circles,aes(x=x,y=y,color=as.factor(grp))) + geom_point() + 
+   theme_minimal(base_family = 'serif') + theme(legend.position = 'none')
+```
+
+## K means
+
+Perform K means with $K=2$. Plot your clusters.
+
+```{r kmeans}
+kmeans = kmeans(as.matrix(circles[,1:2]), 2, nstart=10)$cluster
+ggplot(circles,aes(x=x,y=y,color=as.factor(kmeans))) + geom_point() + 
+   theme_minimal(base_family = 'serif') + theme(legend.position = 'none')
+```
+
+## (Laplacian) K means
+
+Use Laplacian Eigenmaps with Gaussian Kernel and $\gamma=0.01$. Use two eigenvectors. Plot the data in the new coordinate system and color by the original groups. (I believe you can use the last 2 eigenvectors here.)
+
+```{r kpca}
+Delta = as.matrix(dist(as.matrix(circles[,1:2])))
+K = exp(-Delta^2/.005)
+L = diag(n) - diag(1/rowSums(K)) %*% K
+E = eigen(L,symmetric = TRUE)
+le = E$vectors[,124:125] %*% diag(1/E$values[124:125])
+circles$le1 = le[,1]
+circles$le2 = le[,2]
+ggplot(circles,aes(x=le1,y=le2,color=as.factor(grp))) + geom_point() + 
+   theme_minimal(base_family = 'serif') + theme(legend.position = 'none')
+```
+
+Now apply kmeans to the data in the new coordinate system. How'd you do?
+
+```{r kernel-kmeans}
+legrp = kmeans(circles[,4:5],2,nstart=10)$cluster
+ggplot(circles,aes(x=x,y=y,color=as.factor(legrp))) + geom_point() + 
+   theme_minimal(base_family = 'serif') + theme(legend.position = 'none')
+```

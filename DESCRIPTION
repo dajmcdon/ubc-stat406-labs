@@ -20,6 +20,8 @@ Imports:
     magrittr,
     ggplot2,
     cowplot,
-    gradethis
+    gradethis,
+    MASS,
+    nnet
 Depends: 
     R (>= 2.10)
