@@ -1,0 +1,60 @@
+---
+title: "Week 4: Playing with flowers"
+author: "[Your name here]"
+date: "16 October 2018"
+output: html_document
+---
+
+See the `decision_boundary()` as a documented function.
+
+
+```{r setup, echo=FALSE}
+library(knitr)
+opts_chunk$set(echo=TRUE, fig.align='center', fig.width=4, fig.height=3,
+               cache=TRUE, autodep=TRUE, cache.comments=FALSE,
+               message=FALSE, warning=FALSE)
+```
+
+## Analysis with the famed "iris" data
+
+This is a very old, and by now canonical data set. It's in base `R`. Load it with `data(iris)`. 
+
+1. Using this data, perform lda, logistic regression and qdausing only the first 2 variables. Note: `logit` for more than two classes is easiest with the `multinom` function in the `nnet` package. The other methods are in `MASS`.
+
+```{r load-data-estimate}
+data("iris")
+
+```
+
+
+2. Use the following function to view the discriminant boundaries for each of the methods above.
+
+```{r decision-boundary, echo=FALSE}
+decisionplot <- function(model, predict_type = "class",
+  resolution = 100, showgrid = TRUE, ...) {
+  cl = iris[,5]
+  k <- length(unique(cl))
+  plot(iris[,1:2], col = as.integer(cl)+1L, pch = as.integer(cl)+1L, ...)
+  # make grid
+  r <- sapply(iris[,1:2], range, na.rm = TRUE)
+  xs <- seq(r[1,1], r[2,1], length.out = resolution)
+  ys <- seq(r[1,2], r[2,2], length.out = resolution)
+  g <- cbind(rep(xs, each=resolution), rep(ys, time = resolution))
+  colnames(g) <- colnames(r)
+  g <- as.data.frame(g)
+  ### guess how to get class labels from predict
+  ### (unfortunately not very consistent between models)
+  p <- predict(model, g, type = predict_type)
+  if(is.list(p)) p <- p$class
+  p <- as.factor(p)
+
+  if(showgrid) points(g[[1]],g[[2]], col = as.integer(p)+1L, pch = ".")
+
+  z <- matrix(as.integer(p), nrow = resolution, byrow = TRUE)
+  contour(xs, ys, z, add = TRUE, drawlabels = FALSE,
+    lwd = 2, levels = (1:(k-1))+.5)
+  invisible(z)
+}
+```
+
+3. Redo the analysis using all four covariates. Report the classification error of each method with two and four covariates.
