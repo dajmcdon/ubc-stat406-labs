@@ -4,9 +4,7 @@
 \name{leaf}
 \alias{leaf}
 \title{Properties of 340 leaves}
-\format{
-An object of class \code{spec_tbl_df} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 340 rows and 17 columns.
-}
+\format{An object of class \code{spec_tbl_df} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 340 rows and 17 columns.}
 \source{
 \url{https://archive.ics.uci.edu/ml/datasets/Leaf}
 }

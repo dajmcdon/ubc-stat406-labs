@@ -88,3 +88,11 @@
 #' files. Both the paper and the data sets are available from \url{https://opportunityinsights.org.}
 #'
 "mobility"
+
+
+#' S301 Grade Distributions
+#'
+#' A dataset containing the grade distributions for each section of STAT-S301 between 2015-2019.
+#'
+#'
+"s301gradedist"

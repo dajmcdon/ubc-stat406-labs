@@ -45,6 +45,13 @@ If assigned to an object, returns the matrix of predicted classes
 \description{
 Plot decision boundary for a classifier with 2 predictors
 }
+\details{
+This function should work with only the mandatory arguments if the
+classifier is produced via \code{glm()}, \code{MASS::lda()}, \code{MASS::qda()} or from either
+\code{multinom()} or \code{nnet()} in the \code{{nnet}} package. Other classifiers likely
+require additional instructions. If the \code{predict} method produces integer
+or factor labels as output, it should just "work".
+}
 \examples{
 x1 = runif(100,-1,1)
 x2 = runif(100,-1,1)

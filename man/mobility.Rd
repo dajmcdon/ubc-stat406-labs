@@ -4,9 +4,7 @@
 \name{mobility}
 \alias{mobility}
 \title{Economic mobility dataset}
-\format{
-An object of class \code{spec_tbl_df} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 741 rows and 43 columns.
-}
+\format{An object of class \code{spec_tbl_df} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 741 rows and 43 columns.}
 \source{
 This data set was based on the paper "Where is the Land of Opportunity?
 The Geography of Intergenerational Mobility in the United States" (Raj Chetty,
