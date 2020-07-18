@@ -20,10 +20,12 @@ css: "/css/tutorials.css"
 ```{r setup, include=FALSE}
 library(learnr)
 library(gradethis)
+leaf <- UBCstat406labs::leaf
+
 tutorial_options(exercise.timelimit = 25, exercise.checker = gradethis::grade_learnr)
 
 knitr::opts_chunk$set(message=FALSE, warning=FALSE, fig.align='center',fig.width=10,
-               fig.height=6, cache=TRUE, autodep = TRUE)
+               fig.height=6)
 ```
 
 
@@ -90,7 +92,7 @@ draw.tree(pruned_tree)
 
 Produce a confusion matrix and find the tree's in-sample error rate.
 
-```{r confusionmatrix-setup}
+```{r confusionmatrix-setup, message=FALSE, warning=FALSE}
 library(tree)
 library(maptree)
 my_tree = tree(lobes ~. -Species-Specimen_Number, data = leaf)
@@ -99,7 +101,7 @@ pruned_tree = prune.tree(my_tree, k=tree_cv$k[which.min(tree_cv$dev)])
 draw.tree(pruned_tree)
 ```
 
-```{r confusionmatrix, exercise=TRUE}
+```{r confusionmatrix, exercise=TRUE, exercise.lines=3}
 tree_conf <- table(predict(pruned_tree, type='class'), leaf$lobes)
 1 - sum(diag(tree_conf))/sum(tree_conf)
 ```
