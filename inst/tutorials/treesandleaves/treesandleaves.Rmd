@@ -17,7 +17,7 @@ Derived from IU Stat 432 ic12.Rmd
 css: "/css/tutorials.css"
 -->
 
-```{r setup, include=FALSE}
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 library(learnr)
 library(gradethis)
 leaf <- UBCstat406labs::leaf

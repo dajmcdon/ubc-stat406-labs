@@ -29,7 +29,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Generated Data Example
 
-###
+### 
 
 Generate 250 observations from a linear model as follows: $x_i$ should uniform between -2 and 2, the $\epsilon_i$ should be normally distributed with mean zero and variance $x_i^2$, $y_i=3 + 2x_i + \epsilon_i$.
 
