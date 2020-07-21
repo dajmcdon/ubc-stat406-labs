@@ -58,3 +58,5 @@ decisionplot <- function(model, predict_type = "class",
 ```
 
 3. Redo the analysis using all four covariates. Report the classification error of each method with two and four covariates.
+
+
