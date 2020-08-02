@@ -106,7 +106,7 @@ pruned_tree = prune.tree(my_tree, k=tree_cv$k[which.min(tree_cv$dev)])
 draw.tree(pruned_tree)
 ```
 
-```{r confusionmatrix, exercise=TRUE, exercise.lines=3}
+```{r confusionmatrix, exercise=TRUE, exercise.lines=3, exercise.setup="confusionmatrix-setup"}
 tree_conf <- table(predict(pruned_tree, type='class'), leaf$lobes)
 1 - sum(diag(tree_conf))/sum(tree_conf)
 ```
