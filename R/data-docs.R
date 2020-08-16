@@ -92,7 +92,22 @@
 
 #' S301 Grade Distributions
 #'
-#' A dataset containing the grade distributions for each section of STAT-S301 between 2015-2019.
+#' A dataset containing the grade distributions for each section of Indiana
+#' University's 
+#' STAT-S301 (Business statistics) between 2015-2019.
+#' 
+#' | Variable | Description |
+#' | --- | --- |
+#' |term | the semester and year of the course | 
+#' |term_id |numeric code for the semester and year of the course |
+#' | instructor | a unique number corresponding to the course instructor |
+#' | n_students | number of students in the course |
+#' | avg_grade | average final grade |
+#' | avg_student_gpa | average gpa for enrolled students
+#' 
+#' 
+#' The remaining columns contain the percentage of students who earned A-D or other,
+#' as well as the count of students earning each of the allowed letter grades.
 #'
 #'
 "s301gradedist"

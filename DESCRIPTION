@@ -13,7 +13,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Imports: 
     learnr,
     dplyr,
@@ -22,6 +22,21 @@ Imports:
     cowplot,
     gradethis,
     MASS,
-    nnet
+    nnet,
+    ISLR,
+    leaps,
+    mvtnorm,
+    glmnet,
+    lars,
+    mgcv,
+    tree,
+    maptree,
+    bakeoff,
+    class,
+    randomForest,
+    gbm,
+    neuralnet,
+    splines,
+    maniTools
 Depends: 
     R (>= 2.10)
