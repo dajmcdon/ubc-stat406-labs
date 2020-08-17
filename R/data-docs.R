@@ -26,7 +26,7 @@
 #' 16. Entropy - A measure of intensity randomness.
 #'
 #'
-#' @source \url{https://archive.ics.uci.edu/ml/datasets/Leaf}
+#' @source <https://archive.ics.uci.edu/ml/datasets/Leaf>
 "leaf"
 
 #' Economic mobility dataset
@@ -85,7 +85,7 @@
 #' This data set was based on the paper "Where is the Land of Opportunity?
 #' The Geography of Intergenerational Mobility in the United States" (Raj Chetty,
 #' Nathaniel Hendren, Patrick Kline, Emmanuel Saez, QJE 2014), and its replication
-#' files. Both the paper and the data sets are available from \url{https://opportunityinsights.org.}
+#' files. Both the paper and the data sets are available from <https://opportunityinsights.org.>
 #'
 "mobility"
 
