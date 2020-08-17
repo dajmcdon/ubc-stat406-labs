@@ -30,25 +30,17 @@ devtools::install_github("dajmcdon/ubc-stat406-labs")
 ```
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how to run a tutorial:
 
-```{r example}
+```{r example, eval=FALSE}
 library(UBCstat406labs)
-## basic example code
+learnr::run_tutorial("rsquared","UBCstat406labs")
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+Currently available tutorials are:
 
-```{r cars}
-summary(cars)
+
+```{r all-tutorials}
+learnr::available_tutorials("UBCstat406labs")
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
