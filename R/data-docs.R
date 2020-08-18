@@ -111,3 +111,54 @@
 #'
 #'
 "s301gradedist"
+
+
+
+
+#' Light detection and ranging
+#'
+#' The \code{lidar} data frame has 221 pairs from a LIght Detection And Ranging (LIDAR) experiment.
+#'
+#' @description 
+#' This data frame contains the following columns:
+#' 
+#' `range` distance traveled before the light is reflected back to its source.
+#' 
+#' `logratio` logarithm of the ratio of received light from two laser sources.
+#' 
+#' @source Sigrist, M. (Ed.) (1994). \emph{Air Monitoring by Spectroscopic Techniques} (Chemical Analysis Series, vol. 197). New York: Wiley.
+#' @source Originally downloaded from \url{http://matt-wand.utsacademics.info/webspr/lidar.txt}. Also available in the [HRW](https://cran.r-project.org/web/packages/HRW/) package.
+#' 
+#' @examples
+#' data(lidar)
+#' with(lidar, plot(range,logratio))
+"lidar"
+
+
+#' Great British bakeoff results
+#'
+#' Results for individual bakers across all GBBO series
+#'
+#' @format A data frame with 95 rows representing individual bakers and 24 variables:
+#' \describe{
+#'   \item{winners}{was the baker in the final episode?}
+#'   \item{series}{an integer denoting UK series (1-8)}
+#'   \item{baker_full}{a character string giving full name}
+#'   \item{age}{an integer denoting age in years at first episode appeared}
+#'   \item{occupation}{a character string giving occupation}
+#'   \item{hometown}{a character string giving hometown}
+#'   \item{percent_star}{the percentage of episodes achieving star baker}
+#'   \item{percent_technical_wins}{percent of episodes the baker won the technical}
+#'   \item{percent_technical_top3}{percent of times a given baker was in the top 3 (1st, 2nd, or 3rd) on the technical challenge}
+#'   \item{percent_technical_bottom3}{percent of times a given baker was in the bottom 3 on the technical challenge}
+#'   \item{technical_highest}{an integer denoting the best technical rank earned by a given baker across all episodes appeared (higher is better)}
+#'   \item{technical_lowest}{an integer denoting the worst technical rank earned by a given baker across all episodes appeared (higher is better)}
+#'   \item{technical_median}{an integer denoting the median technical rank earned by a given baker across all episodes appeared (higher is better)}
+#'   \item{judge1}{the name of one of the judges}
+#'   \item{judge2}{the name of the other judge}
+#'   \item{viewers_7day}{number of viewers in millions within a 7-day window from airdate}
+#'   \item{viewers_28day}{number of viewers in millions within a 28-day window from airdate}
+#' }
+#' 
+#' @source This is a combination of two datasets in Allison Hill's [bakeoff](https://bakeoff.netlify.app) package.
+"gbbakeoff"
